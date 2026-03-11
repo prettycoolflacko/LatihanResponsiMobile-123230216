@@ -36,7 +36,15 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.network(widget.food.image),
+              child: Image.network(widget.food.image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.broken_image,
+                  size: 100,
+                  color: Colors.grey,
+                ),
+              ),
+              
             ),
             Container(
             padding: EdgeInsets.all(16),
@@ -86,27 +94,30 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
             child: Text("Price : " + total, style: TextStyle(fontSize: 16, fontWeight: FontWeight(800)),),
           ),
           Container(
+            
             margin: EdgeInsets.all(20),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               ElevatedButton(onPressed: () {
-                int jumlahInt = 0;
-                try{
-                jumlahInt = int.parse(_jumlah.text);
-                }catch(e){
-                print(e);
-                }
-                setState(() {
-                total = (food.price * jumlahInt).toString();
-                });
+              int jumlahInt = 0;
+              try{
+              jumlahInt = int.parse(_jumlah.text);
+              }catch(e){
+              print(e);
+              }
+              setState(() {
+              total = (food.price * jumlahInt).toString();
+              });
               },
               child: Text("Tes Ombak"),
               ),
               SizedBox(width: 20,),
               ElevatedButton(onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Berhasil memesan ${_jumlah.text} porsi ${food.name} dengan total harga Rp $total')),);
-                  Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => Root(nama: widget.nama)), );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Berhasil memesan ${_jumlah.text} porsi ${food.name} dengan total harga Rp $total')),);
+                Navigator.pop( context, MaterialPageRoute(builder: (context) => Root(nama: widget.nama)), );
               }, child: Text("Pesan Sekarang"),),
               ],
             ),
