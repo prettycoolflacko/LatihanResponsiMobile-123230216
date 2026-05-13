@@ -120,7 +120,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
           appBar: AppBar(
             backgroundColor: Colors.amberAccent,
             title: Text(
-              widget.type.title,
+              '${widget.type.title} Detail',
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

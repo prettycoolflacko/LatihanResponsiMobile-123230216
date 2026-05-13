@@ -51,7 +51,7 @@ class _ContentListPageState extends State<ContentListPage> {
       appBar: AppBar(
         backgroundColor: Colors.amberAccent,
         title: Text(
-          '${widget.type.title} Details',
+          widget.type.title,
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
