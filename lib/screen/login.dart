@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quiz_mobile/controllers/auth_controller.dart';
+import 'package:quiz_mobile/screen/register.dart';
 import 'package:quiz_mobile/screen/root.dart';
-import '../models/data.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,7 +14,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool isLoggedIn = false;
   bool isLoginFailed = false;
 
 Widget _inputField({
@@ -56,29 +57,44 @@ Widget _passwordField(TextEditingController controller, bool isLoginFailed) {
   );
 }
 
-  void _login() {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+  Future<void> _login() async {
+    final AuthController authController = Get.find<AuthController>();
+    final String username = _usernameController.text.trim();
+    final String password = _passwordController.text;
 
-    if (username == user1.username && password == user1.password) {
+    if (username.isEmpty || password.isEmpty) {
       setState(() {
-        isLoginFailed = false;
-        isLoggedIn = true;
+        isLoginFailed = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful! Welcome, ${user1.nama}.')),
+        const SnackBar(content: Text('Please enter username and password.')),
       );
-      Navigator.pushReplacement(      // ← move it here
-      context,
-      MaterialPageRoute(builder: (context) => Root(nama: user1.nama)),
+      return;
+    }
+
+    final user = await authController.login(
+      username: username,
+      password: password,
     );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (user != null) {
+      setState(() {
+        isLoginFailed = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful! Welcome, ${user.name}.')),
+      );
+      Get.off(() => Root(nama: user.name));
     } else {
       setState(() {
         isLoginFailed = true;
-        isLoggedIn = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed! Please check your credentials.')),
+        const SnackBar(content: Text('Login failed! Please check your credentials.')),
       );
     }
   }
@@ -141,15 +157,8 @@ Widget _passwordField(TextEditingController controller, bool isLoginFailed) {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed : () {
-                                if (isLoggedIn) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => Root(nama: user1.nama)),
-                                  );
-                                } else {
-                                  _login();
-                                }
+                              onPressed: () async {
+                                await _login();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.pinkAccent,
@@ -165,6 +174,18 @@ Widget _passwordField(TextEditingController controller, bool isLoginFailed) {
                             ),
                           ),
                           SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Don't have an account?"),
+                              TextButton(
+                                onPressed: () {
+                                  Get.to(() => const RegisterPage());
+                                },
+                                child: const Text('Register'),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

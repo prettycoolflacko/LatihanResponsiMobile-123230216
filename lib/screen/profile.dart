@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'login.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -56,10 +57,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _logout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false,
-    );
+    Get.offAll(() => const LoginPage());
   }
 }
