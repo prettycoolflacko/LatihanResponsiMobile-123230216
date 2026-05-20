@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_mobile/screen/home.dart';
+import 'package:quiz_mobile/screen/lbs_page.dart';
 import 'package:quiz_mobile/screen/profile.dart';
 
 class Root extends StatefulWidget {
@@ -17,6 +18,7 @@ class _RootState extends State<Root> {
   static const List<BottomNavigationBarItem> _navItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+    BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Lokasi'),
   ];
 
   void _onTabTapped(int index) {
@@ -28,6 +30,7 @@ class _RootState extends State<Root> {
     final List<Widget> pages = [
       Home(nama: widget.nama),
       ProfilePage(nama: widget.nama),
+      const LbsPage(),
     ];
 
     return Scaffold(
@@ -40,3 +43,4 @@ class _RootState extends State<Root> {
     );
   }
 }
+

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:quiz_mobile/controllers/auth_controller.dart';
 import 'package:quiz_mobile/screen/register.dart';
 import 'package:quiz_mobile/screen/root.dart';
+import 'package:quiz_mobile/services/notification_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -85,6 +86,9 @@ Widget _passwordField(TextEditingController controller, bool isLoginFailed) {
       setState(() {
         isLoginFailed = false;
       });
+      // Tampilkan notifikasi login berhasil
+      await NotificationService().showLoginNotification(user.name);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful! Welcome, ${user.name}.')),
       );
