@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_mobile/screen/cart.dart';
 import 'package:quiz_mobile/screen/home.dart';
-import 'package:quiz_mobile/screen/lbs_page.dart';
 import 'package:quiz_mobile/screen/profile.dart';
 
 class Root extends StatefulWidget {
-  final String nama;
-
-  const Root({super.key, required this.nama});
+  const Root({super.key});
 
   @override
   State<Root> createState() => _RootState();
@@ -15,10 +13,10 @@ class Root extends StatefulWidget {
 class _RootState extends State<Root> {
   int _selectedIndex = 0;
 
-  static const List<BottomNavigationBarItem> _navItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-    BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-    BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Lokasi'),
+  static const List<Widget> _pages = [
+    HomePage(),
+    CartPage(),
+    ProfilePage(),
   ];
 
   void _onTabTapped(int index) {
@@ -27,20 +25,34 @@ class _RootState extends State<Root> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
-      Home(nama: widget.nama),
-      ProfilePage(nama: widget.nama),
-      const LbsPage(),
-    ];
-
     return Scaffold(
-      body: pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onTabTapped,
-        items: _navItems,
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onTabTapped,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        animationDuration: const Duration(milliseconds: 400),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.storefront_outlined),
+            selectedIcon: Icon(Icons.storefront),
+            label: 'Products',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart_outlined),
+            selectedIcon: Icon(Icons.shopping_cart),
+            label: 'Cart',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 }
-

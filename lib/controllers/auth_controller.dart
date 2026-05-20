@@ -1,43 +1,26 @@
 import 'package:get/get.dart';
-import '../models/user_database.dart';
-import '../models/user_model.dart';
+import '../services/session_service.dart';
 
 class AuthController extends GetxController {
-  final UserDatabase _db = UserDatabase.instance;
+  // Hardcoded credentials for demo purposes
+  static const String _validUsername = 'admin';
+  static const String _validPassword = 'admin';
 
-  Future<UserModel?> login({
+  Future<bool> login({
     required String username,
     required String password,
   }) async {
     if (username.isEmpty || password.isEmpty) {
-      return null;
+      return false;
     }
-    return _db.validateUser(username, password);
+    if (username == _validUsername && password == _validPassword) {
+      await SessionService.saveLogin(username);
+      return true;
+    }
+    return false;
   }
 
-  Future<String?> register({
-    required String name,
-    required String username,
-    required String password,
-  }) async {
-    if (name.isEmpty || username.isEmpty || password.isEmpty) {
-      return 'Please complete all fields.';
-    }
-    final bool exists = await _db.usernameExists(username);
-    if (exists) {
-      return 'Username already exists.';
-    }
-    try {
-      await _db.insertUser(
-        UserModel(
-          name: name,
-          username: username,
-          password: password,
-        ),
-      );
-    } catch (_) {
-      return 'Failed to register. Please try again.';
-    }
-    return null;
+  Future<void> logout() async {
+    await SessionService.clearSession();
   }
 }
